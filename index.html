@@ -30,24 +30,23 @@ small{color:var(--muted)}
 <body>
 <header><img src="icon-192.png" alt=""><div><h1>미소찬한돈 발주</h1><p id="who">고객 발주서</p></div></header>
 <main id="home">
+  <section class="card">
+    <a class="btn" id="openNow" href="#">발주서 바로 열기</a>
+    <p id="target" style="margin:10px 0 0;text-align:center">설치 없이 바로 발주할 수 있습니다.</p>
+  </section>
   <section class="card" id="kakaoCard" hidden>
-    <h2>브라우저에서 열어 주세요</h2>
-    <p>카카오톡 안에서는 앱 설치가 되지 않습니다. 아래 버튼으로 크롬(또는 사파리)에서 열어 주세요.</p>
-    <button id="openExternal" type="button">브라우저로 열기</button>
+    <h2>앱으로 설치하려면</h2>
+    <p>카카오톡 안에서는 설치가 되지 않습니다. 크롬(아이폰은 사파리)에서 열어 설치해 주세요.</p>
+    <button id="openExternal" type="button" class="btn secondary">크롬으로 열어 설치</button>
   </section>
   <section class="card" id="installCard" hidden>
-    <h2>앱으로 설치하기</h2>
+    <h2>자주 쓰신다면 앱으로 설치</h2>
     <p>한 번 설치하면 휴대폰 홈 화면의 아이콘으로 바로 발주할 수 있습니다.</p>
     <button id="installBtn" type="button">앱 설치</button>
   </section>
   <section class="card" id="iosCard" hidden>
     <h2>아이폰 설치 방법</h2>
     <ol><li>화면 아래 <b>공유 버튼(□↑)</b>을 누릅니다.</li><li><b>홈 화면에 추가</b>를 누릅니다.</li><li>오른쪽 위 <b>추가</b>를 누르면 끝입니다.</li></ol>
-  </section>
-  <section class="card">
-    <h2>발주서 열기</h2>
-    <p id="target">설치하지 않고 바로 발주할 수도 있습니다.</p>
-    <a class="btn secondary" id="openNow" href="#">발주서 바로 열기</a>
   </section>
   <small>미소찬한돈 · 담당자 박한진 010-7789-8733</small>
 </main>
