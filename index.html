@@ -51,13 +51,13 @@ small{color:var(--muted)}
   </section>
   <small>미소찬한돈 · 담당자 박한진 010-7789-8733</small>
 </main>
-<iframe id="app" class="hide" title="미소찬한돈 발주서" allow="clipboard-write"></iframe>
+<iframe id="app" class="hide" title="미소찬한돈 발주서" allow="clipboard-write; web-share"></iframe>
 <script>
 'use strict';
 // 고객용 Apps Script 웹앱 주소 (운영 배포, 주소 고정)
 const EXEC='https://script.google.com/macros/s/AKfycbwAgwCW2kYLd0SkRjS5t65gMVlQRjfg3ljJVbfIH_VSKE5JeqtM5b0YBlUalmJk1q7xMQ/exec';
 // 표시 방식: 'frame' = 앱 안에 전체 화면(Apps Script에 ALLOWALL 반영 후), 'go' = 발주서로 이동(현재 바로 동작)
-const MODE=new URLSearchParams(location.search).get('mode')||'go';
+const MODE=new URLSearchParams(location.search).get('mode')||'frame'; // 앱으로 열면 주소 띠 없이 앱 안에 꽉 차게 표시
 const $=id=>document.getElementById(id);
 const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
 const qs=new URLSearchParams(location.search);
