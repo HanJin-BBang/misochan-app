@@ -66,11 +66,12 @@ const token=qs.get('client');
 if(token&&/^[A-Za-z0-9_-]{32,100}$/.test(token))store.set('client',token);
 const saved=store.get('client');
 const target=saved?EXEC+'?client='+encodeURIComponent(saved):EXEC+'?view=new';
+const appTarget=target+'&app=1'; // 앱으로 열었을 때 발주서의 '홈 화면에 추가' 버튼 숨김
 $('who').textContent=saved?'거래처 전용 발주서':'신규·공통 발주서';
 $('openNow').href=target;
 const ua=navigator.userAgent,isKakao=/KAKAOTALK/i.test(ua),isIOS=/iPhone|iPad|iPod/i.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1),isAndroid=/Android/i.test(ua);
 const standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
-function openApp(){if(MODE==='frame'){$('home').classList.add('hide');document.querySelector('header').classList.add('hide');const f=$('app');f.src=target;f.classList.remove('hide');}else{location.replace(target);}}
+function openApp(){if(MODE==='frame'){$('home').classList.add('hide');document.querySelector('header').classList.add('hide');const f=$('app');f.src=appTarget;f.classList.remove('hide');}else{location.replace(appTarget);}}
 if(standalone){openApp();}
 else if(isKakao){
   $('kakaoCard').hidden=false;
