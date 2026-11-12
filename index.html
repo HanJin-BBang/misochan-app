@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>미소찬한돈 발주</title>
+<meta name="theme-color" content="#1B2F45">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="미소찬 발주">
+<style>
+:root{--navy:#1B2F45;--red:#B3262E;--bg:#F3F1EE;--line:#DDE3E9;--muted:#4A5B6D}
+*{box-sizing:border-box}html,body{margin:0;height:100%;background:var(--bg);color:var(--navy);font:16px/1.5 -apple-system,'Malgun Gothic','Apple SD Gothic Neo',sans-serif}
+header{background:var(--navy);color:#fff;padding:18px 16px 16px;border-bottom:4px solid var(--red);display:flex;align-items:center;gap:12px}
+header img{width:44px;height:44px;border-radius:50%;background:#fff;padding:4px}
+header h1{font-size:19px;margin:0}header p{margin:2px 0 0;color:#D6DEE7;font-size:13px}
+main{max-width:520px;margin:0 auto;padding:18px 16px 32px}
+.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:14px;box-shadow:0 1px 3px rgba(27,47,69,.1)}
+.card h2{font-size:17px;margin:0 0 6px}.card p{margin:0 0 12px;color:var(--muted);font-size:14px}
+button,.btn{display:flex;align-items:center;justify-content:center;width:100%;min-height:52px;border:0;border-radius:10px;background:var(--red);color:#fff;font:inherit;font-weight:700;text-decoration:none;cursor:pointer}
+.btn.secondary{background:#fff;color:var(--navy);border:1px solid #C9D1DA;margin-top:10px}
+ol{margin:6px 0 0;padding-left:20px;color:var(--navy)}ol li{margin:6px 0}
+.hide{display:none!important}
+#app{position:fixed;inset:0;border:0;width:100%;height:100%;background:#fff}
+small{color:var(--muted)}
+</style>
+</head>
+<body>
+<header><img src="icon-192.png" alt=""><div><h1>미소찬한돈 발주</h1><p id="who">고객 발주서</p></div></header>
+<main id="home">
+  <section class="card" id="kakaoCard" hidden>
+    <h2>브라우저에서 열어 주세요</h2>
+    <p>카카오톡 안에서는 앱 설치가 되지 않습니다. 아래 버튼으로 크롬(또는 사파리)에서 열어 주세요.</p>
+    <button id="openExternal" type="button">브라우저로 열기</button>
+  </section>
+  <section class="card" id="installCard" hidden>
+    <h2>앱으로 설치하기</h2>
+    <p>한 번 설치하면 휴대폰 홈 화면의 아이콘으로 바로 발주할 수 있습니다.</p>
+    <button id="installBtn" type="button">앱 설치</button>
+  </section>
+  <section class="card" id="iosCard" hidden>
+    <h2>아이폰 설치 방법</h2>
+    <ol><li>화면 아래 <b>공유 버튼(□↑)</b>을 누릅니다.</li><li><b>홈 화면에 추가</b>를 누릅니다.</li><li>오른쪽 위 <b>추가</b>를 누르면 끝입니다.</li></ol>
+  </section>
+  <section class="card">
+    <h2>발주서 열기</h2>
+    <p id="target">설치하지 않고 바로 발주할 수도 있습니다.</p>
+    <a class="btn secondary" id="openNow" href="#">발주서 바로 열기</a>
+  </section>
+  <small>미소찬한돈 · 담당자 박한진 010-7789-8733</small>
+</main>
+<iframe id="app" class="hide" title="미소찬한돈 발주서" allow="clipboard-write"></iframe>
+<script>
+'use strict';
+// 고객용 Apps Script 웹앱 주소 (운영 배포, 주소 고정)
+const EXEC='https://script.google.com/macros/s/AKfycbwAgwCW2kYLd0SkRjS5t65gMVlQRjfg3ljJVbfIH_VSKE5JeqtM5b0YBlUalmJk1q7xMQ/exec';
+// 표시 방식: 'frame' = 앱 안에 전체 화면(Apps Script에 ALLOWALL 반영 후), 'go' = 발주서로 이동(현재 바로 동작)
+const MODE=new URLSearchParams(location.search).get('mode')||'go';
+const $=id=>document.getElementById(id);
+const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+const qs=new URLSearchParams(location.search);
+// 거래처 전용 링크(?client=토큰)로 처음 들어오면 기억해 두고, 설치 후 아이콘으로 열 때 같은 거래처로 연결
+const token=qs.get('client');
+if(token&&/^[A-Za-z0-9_-]{32,100}$/.test(token))store.set('client',token);
+const saved=store.get('client');
+const target=saved?EXEC+'?client='+encodeURIComponent(saved):EXEC+'?view=new';
+$('who').textContent=saved?'거래처 전용 발주서':'신규·공통 발주서';
+$('openNow').href=target;
+const ua=navigator.userAgent,isKakao=/KAKAOTALK/i.test(ua),isIOS=/iPhone|iPad|iPod/i.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1),isAndroid=/Android/i.test(ua);
+const standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
+function openApp(){if(MODE==='frame'){$('home').classList.add('hide');document.querySelector('header').classList.add('hide');const f=$('app');f.src=target;f.classList.remove('hide');}else{location.replace(target);}}
+if(standalone){openApp();}
+else if(isKakao){
+  $('kakaoCard').hidden=false;
+  $('openExternal').onclick=()=>{const here=location.href;if(isAndroid){location.href='intent://'+here.replace(/^https?:\/\//,'')+'#Intent;scheme=https;package=com.android.chrome;end';}else{location.href='kakaotalk://web/openExternal?url='+encodeURIComponent(here);}};
+}else if(isIOS){$('iosCard').hidden=false;}
+let deferred=null;
+addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferred=e;$('installCard').hidden=false;});
+$('installBtn').onclick=async()=>{if(!deferred)return;deferred.prompt();const r=await deferred.userChoice;deferred=null;$('installCard').hidden=true;if(r.outcome==='accepted')$('target').textContent='설치되었습니다. 홈 화면의 미소찬 발주 아이콘으로 열어 주세요.';};
+addEventListener('appinstalled',()=>{$('installCard').hidden=true;});
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+</script>
+</body>
+</html>
